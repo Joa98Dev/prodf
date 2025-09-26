@@ -201,7 +201,7 @@ class PDFMenu(ctk.CTk):
     def show_about(self):
         CTkMessagebox(
             title="About",
-            message="ProDF v1.0.0\nDeveloped by Joa98\njoadev98@gmail.com\n\nLicense: GPL v3.0\nSource code available at:\nhttps://official-repo",
+            message="ProDF v1.0.0\nDeveloped by Joa98\njoadev98@gmail.com\n\nLicense: GPL v3.0\nSource code available at:\nhttps://github.com/Joa98Dev/prodf",
             icon="info",
             option_1="OK"
         )
