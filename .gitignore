@@ -1,0 +1,11 @@
+# Folders
+bin/
+build/
+dist/
+pdfTool/
+__pycache__/
+
+# Files
+converter_office.py
+main.spec
+
