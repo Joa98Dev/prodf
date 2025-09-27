@@ -135,4 +135,4 @@ python3 main.py
 ## 📦 Compiled Version
 
 Don't want to compile it yourself?
-Then you can download a precompiled version for **Linux** and **Windows** [here]()
+Then you can download a precompiled version for **Linux** and **Windows** [here](https://joa98.itch.io/prodf)
