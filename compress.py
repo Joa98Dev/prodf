@@ -6,11 +6,21 @@ from tkinter import filedialog
 from CTkMessagebox import CTkMessagebox
 import numpy as np
 from pdf2image import convert_from_path
+from PIL import Image, ImageTk
+from customtkinter import CTkImage
 from fpdf import FPDF
 import io
 import traceback
 import tempfile
 import sys
+
+# Create PDF thumbnails
+def pdf_to_thumbnail(pdf_path, size=(100, 100)):
+    pages = convert_from_path(pdf_path, first_page=1, last_page=1)
+    thumbnail = pages[0]
+    thumbnail.thumbnail(size)
+    return CTkImage(thumbnail, size=size)
+
 
 # Get the path of the QPDF executable
 def get_qpdf_path():
@@ -121,8 +131,13 @@ class CompressPanel(ctk.CTkFrame):
         ctk.CTkLabel(self, text="Compress PDF", font=ctk.CTkFont(size=16, weight="bold")).pack(pady=10)
 
         # Textbox that shows the selected files
-        self.file_listbox = ctk.CTkTextbox(self, height=120, width=400, state="disabled")
-        self.file_listbox.pack(pady=5, padx=20, fill="both", expand=True)
+        #self.file_listbox = ctk.CTkTextbox(self, height=120, width=400, state="disabled")
+        #self.file_listbox.pack(pady=5, padx=20, fill="both", expand=True)
+        
+        self.scroll_frame = ctk.CTkScrollableFrame(self, width=400, height=200)
+        self.scroll_frame.pack(pady=10, padx=20, fill="both", expand=True)
+
+        self.thumbnails = []
 
         # Compression level selection
         self.mode_var = ctk.StringVar(value="Recommended Compression")
@@ -154,11 +169,63 @@ class CompressPanel(ctk.CTkFrame):
 
     # Show the selected files
     def update_listbox(self):
-        self.file_listbox.configure(state="normal")
-        self.file_listbox.delete("1.0", "end")
-        for f in self.pdf_files:
-            self.file_listbox.insert("end", f + "\n")
-        self.file_listbox.configure(state="disabled")
+        for widget in self.scroll_frame.winfo_children():
+            widget.destroy()
+        self.thumbnails = []
+
+        max_columns = 4
+        row = 0
+        column = 0
+
+        for i, f in enumerate(self.pdf_files):
+            thumb = pdf_to_thumbnail(f)
+            self.thumbnails.append(thumb)
+
+            thumb_label = ctk.CTkLabel(
+                    self.scroll_frame,
+                    image=thumb,
+                    text=os.path.basename(f),
+                    compound="top",
+                    corner_radius=8,
+                    fg_color="#333333",
+                    width=120,
+                    height=140
+            )
+
+            thumb_label.grid(row=0, column=i, padx=5, pady=5)
+
+            thumb_label.bind("<Button-1>", lambda e, l=thumb_label, f=f: self.on_thumbnail_click(f,l))  
+            thumb_label.bind("<Enter>", lambda e, f=f: self.hover_on(f))
+            thumb_label.bind("<Leave>", self.hover_off)
+
+            column += 1
+            if column >= max_columns:
+                column = 0
+                row += 1
+
+
+# Select the PDF file inside the merge panel
+    def on_thumbnail_click(self, pdf_path, label_widget):
+        if getattr(label_widget, "selected", False):
+            label_widget.configure(fg_color=None)
+            label_widget.selected = False
+        else:
+            label_widget.configure(fg_color="#aa2e25")
+            label_widget.selected = True
+
+    def hover_on(self, pdf_path):
+        top = ctk.CTkToplevel(self)
+        top.geometry("300x400")
+        top.overrideredirect(True)
+        thumb = pdf_to_thumbnail(pdf_path, size=(300, 400))
+        label = ctk.CTkLabel(top, image=thumb)
+        label.image = thumb
+        label.pack()
+        self.hover_preview = top
+
+    def hover_off(self, event):
+        if hasattr(self, "hover_preview"):
+            self.hover_preview.destroy()
 
     # Compress selected files
     def compress_pdf(self):

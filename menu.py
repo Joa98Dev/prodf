@@ -7,6 +7,12 @@ from compress import CompressPanel
 from html_to_pdf import ConvertPanel
 from pdf_to_html import PDF_to_HTML_Panel
 from rotate import RotatePanel
+from sign import SignPanel
+from watermark import WatermarkPanel
+from encrypt import EncryptPanel
+from decrypt import DecryptPanel
+from imagetopdf import ImageToPDFPanel
+from pdftoimage import PDFToImagePanel
 from CTkMessagebox import CTkMessagebox
 from PIL import Image
 
@@ -15,9 +21,17 @@ class PDFMenu(ctk.CTk):
     def __init__(self):
         super().__init__()
 
-        self.title("ProDF v1.0.0") # App title
-        self.geometry("700x650") # Window size
+        self.title("ProDF v1.6.0") # App title
+        self.geometry("1000x850")
         self.resizable(False, False) # Non-resizable
+
+        # light/dark theme
+        self.theme_mode = "dark"
+
+        # Add navigation buttons
+        self.current_page = 0
+        self.buttons_per_page = 6
+
 
         # menu bar always on top
         self.create_menu_bar()
@@ -25,6 +39,23 @@ class PDFMenu(ctk.CTk):
         # Dynamic screen
         self.container = ctk.CTkFrame(self)
         self.container.pack(expand=True, fill="both")
+
+
+        # --------------------------
+        #  LIGHT/DARK MODE TOGGLE
+        # --------------------------
+        self.theme_button = ctk.CTkButton(
+            self,
+            text="🌙",           # default (dark theme)
+            width=40,
+            height=30,
+            fg_color="transparent",
+            hover_color=("gray70", "gray30"),
+            command=self.toggle_theme
+        )
+        self.theme_button.place(relx=0.98, rely=0.02, anchor="ne")
+
+
 
         self.show_main_area()
 
@@ -57,105 +88,101 @@ class PDFMenu(ctk.CTk):
     # Main Menu Area
     def show_main_area(self):
         self.clear_container()
+
         main_frame = ctk.CTkFrame(self.container)
         main_frame.pack(expand=True, fill="both", padx=20, pady=10)
 
-        main_frame.grid_columnconfigure((0, 1, 2), weight=1, uniform="a")
-        main_frame.grid_rowconfigure((0, 1), weight=1, uniform="a")
+        # Set button grids to 3x2 (6 buttons per page)
+        for r in range(2):
+            main_frame.grid_rowconfigure(r, weight=1)
+        for c in range(3):
+            main_frame.grid_columnconfigure(c, weight=1)
 
-        # Button Icons
-        merge_icon = ctk.CTkImage(
-                Image.open(os.path.join(os.path.dirname(__file__), "icons/merge_icon.png")), size=(80, 80))
+        # --- NEW DEFINEND BUTTON LIST ---
+        all_buttons = [
+            ("Merge PDF", "icons/merge_icon.png", self.show_merge_panel),
+            ("Split PDF", "icons/split_icon.png", self.show_split_panel),
+            ("Compress PDF", "icons/compress_icon.png", self.show_compress_panel),
+            ("Rotate PDF", "icons/rotate_icon.png", self.show_rotate_panel),
+            ("HTML to PDF", "icons/html_icon.png", self.show_html_panel),
+            ("PDF to HTML", "icons/pdf_html_icon.png", self.show_pdfhtml_panel),
+            ("Sign PDF", "icons/sign_icon.png", self.show_sign_panel),
+            ("Watermark", "icons/watermark_icon.png", self.show_watermark_panel),
+            ("Encrypt", "icons/encrypt_icon.png", self.show_encrypt_panel),
+            ("Decrypt", "icons/decrypt_icon.png", self.show_decrypt_panel),
+            ("JPG to PDF", "icons/imagetopdf_icon.png", self.show_image_to_pdf_panel),
+            ("PDF to JPG", "icons/pdftoimage_icon.png", self.show_pdf_to_image_panel),
+        ]
 
-        split_icon = ctk.CTkImage(Image.open(os.path.join(os.path.dirname(__file__), "icons/split_icon.png")), size=(80, 80))
+        total_pages = (len(all_buttons) - 1) // self.buttons_per_page + 1
+        
+        # Get buttons of current panel
+        start = self.current_page * self.buttons_per_page
+        end = start + self.buttons_per_page
+        page_buttons = all_buttons[start:end]
 
-        compress_icon = ctk.CTkImage(Image.open(os.path.join(os.path.dirname(__file__), "icons/compress_icon.png")), size=(80, 80))
+        # Render buttons
+        for index, (label, icon_file, action) in enumerate(page_buttons):
+            row = index // 3
+            col = index % 3
 
-        html_icon = ctk.CTkImage(Image.open(os.path.join(os.path.dirname(__file__), "icons/html_icon.png")), size=(80, 80))
+            icon = ctk.CTkImage(
+                Image.open(os.path.join(os.path.dirname(__file__), icon_file)),
+                size=(80, 80)
+            )
 
-        pdf_html_icon = ctk.CTkImage(Image.open(os.path.join(os.path.dirname(__file__), "icons/pdf_html_icon.png")), size=(80, 80))
-
-        rotate_icon = ctk.CTkImage(Image.open(os.path.join(os.path.dirname(__file__), "icons/rotate_icon.png")), size=(80, 80))
-
-        # Buttons
-
-        # Merge
-        merge_btn = ctk.CTkButton(
+            btn = ctk.CTkButton(
                 main_frame,
-                text="Merge PDF",
-                image=merge_icon,
+                text=label,
+                font=("Roboto", 18),
+                image=icon,
                 compound="top",
-                width=150,
-                height=80,
-                command=self.show_merge_panel
+                width=120,
+                height=120,
+                command=action
+            )
+            btn.grid(row=row, column=col, padx=10, pady=10, sticky="nsew")
+
+        # --- PREVIOUS BUTTON ---
+        prev_btn = ctk.CTkButton(
+            main_frame,
+            text="◀",
+            width=40,
+            height=40,
+            corner_radius=14,
+            font=("Roboto", 22),
+            fg_color="transparent",
+            hover_color="#2b2b2b",
+            border_color="#3a3a3a",
+            #border_width=2,
+            command=lambda: self.change_page(-1)
         )
+        prev_btn.place(x=10, rely=0.5, anchor="w")
 
-        # Split
-        split_btn = ctk.CTkButton(
-                main_frame,
-                text="Split PDF",
-                image=split_icon,
-                compound="top",
-                width=150,
-                height=80,
-                command=self.show_split_panel
+        # --- NEXT BUTTON ---
+        next_btn = ctk.CTkButton(
+            main_frame,
+            text="▶",
+            width=40,
+            height=40,
+            corner_radius=14,
+            font=("Roboto", 22),
+            fg_color="transparent",
+            hover_color="#2b2b2b",
+            border_color="#3a3a3a",
+            #border_width=2,
+            command=lambda: self.change_page(1)
         )
+        next_btn.place(relx=1.0, x=-10, rely=0.5, anchor="e")
 
-        # Compress
-        compress_btn = ctk.CTkButton(
-                main_frame,
-                text="Compress PDF",
-                image=compress_icon,
-                compound="top",
-                width=150,
-                height=80,
-                command=self.show_compress_panel
-        )
+    def change_page(self, direction):
+        # Total of buttons
+        total = 12
+        total_pages = (total - 1) // self.buttons_per_page + 1
 
-        # Rotate
-        rotate_btn = ctk.CTkButton(
-                main_frame,
-                text="Rotate PDF",
-                image=rotate_icon,
-                compound="top",
-                width=150,
-                height=80,
-                command=self.show_rotate_panel
-        )
+        self.current_page = (self.current_page + direction) % total_pages
+        self.show_main_area()
 
-        # HTML to PDF
-        html_btn = ctk.CTkButton(
-                main_frame,
-                text="HTML to PDF",
-                image=html_icon,
-                compound="top",
-                width=150,
-                height=80,
-                command=self.show_html_panel
-        )
-
-        # PDF to HTML
-        convert_html_btn = ctk.CTkButton(
-                main_frame,
-                text="PDF to HTML",
-                image=pdf_html_icon,
-                compound="top",
-                width=150,
-                height=80,
-                command=self.show_pdfhtml_panel
-        )
-
-        merge_btn.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
-
-        split_btn.grid(row=0, column=1, padx=10, pady=10, sticky="nsew")
-
-        compress_btn.grid(row=0, column=2, padx=10, pady=10, sticky="nsew")
-
-        rotate_btn.grid(row=1, column=0, padx=10, pady=10, sticky="nsew")
-
-        html_btn.grid(row=1, column=1, padx=10, pady=10, sticky="nsew")
-
-        convert_html_btn.grid(row=1, column=2, padx=10, pady=10, sticky="nsew")
 
     # Button features
     def show_merge_panel(self):
@@ -188,6 +215,37 @@ class PDFMenu(ctk.CTk):
         pdfhtml_screen = PDF_to_HTML_Panel(self.container, go_back_callback=self.show_main_area)
         pdfhtml_screen.pack(fill="both", expand=True)
 
+    def show_sign_panel(self):
+        self.clear_container()
+        sign_screen = SignPanel(self.container, go_back=self.show_main_area)
+        sign_screen.pack(fill="both", expand=True)
+
+    def show_watermark_panel(self):
+        self.clear_container()
+        watermark_screen = WatermarkPanel(self.container, go_back=self.show_main_area)
+        watermark_screen.pack(fill="both", expand=True)
+
+    def show_encrypt_panel(self):
+        self.clear_container()
+        encrypt_screen = EncryptPanel(self.container, go_back=self.show_main_area)
+        encrypt_screen.pack(fill="both", expand=True)
+
+    def show_decrypt_panel(self):
+        self.clear_container()
+        decrypt_screen = DecryptPanel(self.container, go_back=self.show_main_area)
+        decrypt_screen.pack(fill="both", expand=True)
+
+    def show_image_to_pdf_panel(self):
+        self.clear_container()
+        imgtopdf_screen = ImageToPDFPanel(self.container, go_back=self.show_main_area)
+        imgtopdf_screen.pack(fill="both", expand=True)
+
+    def show_pdf_to_image_panel(self):
+        self.clear_container()
+        pdftoimg_screen = PDFToImagePanel(self.container, go_back=self.show_main_area)
+        pdftoimg_screen.pack(fill="both", expand=True)
+
+
     def show_file_menu(self):
         win = ctk.CTkToplevel(self)
         win.title("File")
@@ -201,10 +259,25 @@ class PDFMenu(ctk.CTk):
     def show_about(self):
         CTkMessagebox(
             title="About",
-            message="ProDF v1.0.0\nDeveloped by Joa98\njoadev98@gmail.com\n\nLicense: GPL v3.0\nSource code available at:\nhttps://github.com/Joa98Dev/prodf",
+            message="ProDF v1.6.0\nDeveloped by Joa98\njoadev98@gmail.com\n\nLicense: GPL v3.0\nSource code available at:\nhttps://github.com/Joa98Dev/prodf\n",
             icon="info",
             option_1="OK"
         )
+
+
+    def toggle_theme(self):
+        if not hasattr(self, "theme_mode"):
+            self.theme_mode = "dark"
+
+        if self.theme_mode == "dark":
+            ctk.set_appearance_mode("light")
+            self.theme_mode = "light"
+            self.theme_button.configure(text="🌙")
+        else:
+            ctk.set_appearance_mode("dark")
+            self.theme_mode = "dark"
+            self.theme_button.configure(text="☀️")
+
 
     def clear_container(self):
         for widget in self.container.winfo_children():

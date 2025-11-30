@@ -6,6 +6,7 @@ from menu import PDFMenu
 import customtkinter as ctk
 
 
+
 # Helper: get path for resources
 def resource_path(path):
     """Get absolute path to resource, works for PyInstaller."""
@@ -36,6 +37,7 @@ if __name__ == "__main__":
     # Set appearance and theme
     ctk.set_appearance_mode("System")
     ctk.set_default_color_theme(resource_path("themes/dark_rose.json"))
+    #ctk.set_default_color_theme(resource_path("themes/frutiger.json"))
 
     # Create the main window
     app = PDFMenu()
