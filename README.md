@@ -21,6 +21,7 @@ Python-based tool built with pyqpdf, CustomTkinter, wkhtmltopdf and pdf2image, w
 * Add text or image as a watermark.
 * Add potection to your files or remove it.
 * Covert your PDF files into a JPG file or vice versa
+* Works 100% offline without any internet conection. 
 * Never stores or share users data
 
 ## 🗃️ Requirements
