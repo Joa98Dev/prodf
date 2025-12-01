@@ -37,8 +37,11 @@ class SignPanel(ctk.CTkFrame):
         ctk.CTkButton(btn_frame, text="Save Signature", command=self.save_signature).grid(row=0, column=1, padx=5)
         ctk.CTkButton(btn_frame, text="Load Image", command=self.load_signature_image).grid(row=0, column=2, padx=5)
         ctk.CTkButton(btn_frame, text="Load PDF", command=self.load_pdf).grid(row=0, column=3, padx=5)
+
+        ctk.CTkButton(btn_frame, text="Save Signed PDF", command=self.apply_signature).grid(row=0, column=4, padx=5) 
+
         if self.go_back_callback:
-            ctk.CTkButton(btn_frame, text="Back", command=self.go_back).grid(row=0, column=4, padx=5)
+            ctk.CTkButton(btn_frame, text="Back", command=self.go_back).grid(row=0, column=5, padx=5)
 
         # Page selection Combobox
         page_frame = ctk.CTkFrame(self, fg_color="transparent")
