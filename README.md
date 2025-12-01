@@ -1,6 +1,6 @@
 # 📄 ProDF - PDF Tool Manager
 
-**Version:** 1.0.0
+**Version:** 1.6.0
 
 **Author:** Joa98
 
@@ -11,12 +11,16 @@ Python-based tool built with pyqpdf, CustomTkinter, wkhtmltopdf and pdf2image, w
 
 ## 🚀 Features
 
-* Merge various PDFs into one file
-* Split a PDF into various documents
-* Compress files to share it easly
+* Merge various PDFs into one file.
+* Split a PDF into various documents.
+* Compress files to share it easly.
 * Rotate it!
-* Convert an HTML or a website into a PDF file
-* Make a PDF into an HTML file
+* Convert an HTML or a website into a PDF file.
+* Make a PDF into an HTML file.
+* Sign your files.
+* Add text or image as a watermark.
+* Add potection to your files or remove it.
+* Covert your PDF files into a JPG file or vice versa
 * Never stores or share users data
 
 ## 🗃️ Requirements
