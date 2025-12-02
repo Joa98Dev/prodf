@@ -10,7 +10,7 @@ from PIL import Image, ImageDraw, ImageTk
 from pdf2image import convert_from_path
 
 
-class SignPanel(ctk.CTkFrame):
+class SignPanel(ctk.CTkScrollableFrame):
     def __init__(self, master, go_back=None):
         super().__init__(master)
         self.go_back_callback = go_back
@@ -36,9 +36,7 @@ class SignPanel(ctk.CTkFrame):
         ctk.CTkButton(btn_frame, text="Clear", command=self.clear_signature).grid(row=0, column=0, padx=5)
         ctk.CTkButton(btn_frame, text="Save Signature", command=self.save_signature).grid(row=0, column=1, padx=5)
         ctk.CTkButton(btn_frame, text="Load Image", command=self.load_signature_image).grid(row=0, column=2, padx=5)
-        ctk.CTkButton(btn_frame, text="Load PDF", command=self.load_pdf).grid(row=0, column=3, padx=5)
-
-        ctk.CTkButton(btn_frame, text="Save Signed PDF", command=self.apply_signature).grid(row=0, column=4, padx=5) 
+        ctk.CTkButton(btn_frame, text="Load PDF", command=self.load_pdf).grid(row=0, column=3, padx=5) 
 
         if self.go_back_callback:
             ctk.CTkButton(btn_frame, text="Back", command=self.go_back).grid(row=0, column=5, padx=5)

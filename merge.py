@@ -17,9 +17,9 @@ def pdf_to_thumbnail(pdf_path, size=(100, 100)):
     #return ImageTk.PhotoImage(thumbnail)
 
 # Create the frame to show the merge screen
-class MergePanel(ctk.CTkFrame):
+class MergePanel(ctk.CTkScrollableFrame):
     def __init__(self, master, go_back):
-        super().__init__(master)
+        super().__init__(master, width=600)
 
         # Store the selected PDF files
         self.pdf_files = []

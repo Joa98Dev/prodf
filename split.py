@@ -16,9 +16,9 @@ def pdf_to_thumbnail(pdf_path, size=(100, 100)):
     return CTkImage(thumbnail, size=size)
 
 # Create the frame to show the split screen
-class SplitPanel(ctk.CTkFrame):
+class SplitPanel(ctk.CTkScrollableFrame):
     def __init__(self, master, go_back):
-        super().__init__(master)
+        super().__init__(master, width=600)
         
         # Store the selected PDF files
         self.pdf_files = []

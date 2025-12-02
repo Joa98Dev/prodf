@@ -22,7 +22,7 @@ class PDFMenu(ctk.CTk):
         super().__init__()
 
         self.title("ProDF v1.6.0") # App title
-        self.geometry("1000x850")
+        self.geometry("800x650")
         self.resizable(False, False) # Non-resizable
 
         # light/dark theme

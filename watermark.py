@@ -11,7 +11,7 @@ from PIL import Image
 from customtkinter import CTkImage
 
 
-class WatermarkPanel(ctk.CTkFrame):
+class WatermarkPanel(ctk.CTkScrollableFrame):
     def __init__(self, master, go_back=None):
         super().__init__(master)
         self.go_back = go_back
