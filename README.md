@@ -7,7 +7,7 @@
 <img src="img/Cover.png" align="center"/>
 
 
-Python-based tool built with pyqpdf, CustomTkinter, wkhtmltopdf and pdf2image, where you can manage and convert PDFs.
+Python-based tool built with pyqpdf, CustomTkinter, wkhtmltopdf, pdf2image and retrolab where you can manage and convert PDFs.
 
 ## 🚀 Features
 
@@ -27,7 +27,7 @@ Python-based tool built with pyqpdf, CustomTkinter, wkhtmltopdf and pdf2image, w
 ## 🗃️ Requirements
 
 * **Python 3.10+**
-* **pyqpdf**, **pdf2image** and **customtkinter** - (installed via `requirements.txt`)
+* **pyqpdf**, **pdf2image**, **customtkinter** and **retrolab** - (installed via `requirements.txt`)
 * wkhtmltopdf modules -> [Download HERE!](https://wkhtmltopdf.org/downloads.html)
 * qpdf modules -> [Download HERE!](https://github.com/qpdf/qpdf/releases)
 * Linux / Windows / macOS
